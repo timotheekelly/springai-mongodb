@@ -48,7 +48,7 @@ curl -X POST http://localhost:8080/api/v1/add-docs \
     }
   },
   {
-    "content": "A loyal and dedicated Hong Kong Inspector teams up with a reckless and loudmouthed LAPD detective to rescue a kidnapped Chinese consul's daughter, forming an unlikely partnership and battling a dangerous crime syndicate.",
+    "content": "A loyal and dedicated Hong Kong Inspector teams up with a reckless and loudmouthed LAPD detective to rescue a kidnapped Chinese consuls daughter, forming an unlikely partnership and battling a dangerous crime syndicate.",
     "metadata": {
       "title": "Rush Hour",
       "year": 1998,
