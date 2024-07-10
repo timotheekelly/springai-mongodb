@@ -1,6 +1,5 @@
 package com.mongodb.springai_mongodb.config;
 
-import org.bson.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.api.OpenAiApi;
@@ -12,12 +11,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
 
 @Configuration
 @SpringBootConfiguration
@@ -41,37 +34,8 @@ public class MongodbConfig {
 
     @Bean
     public VectorStore mongodbVectorStore(MongoTemplate mongoTemplate, EmbeddingModel embeddingModel) {
-        boolean indexExists = false;
-
-        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
-            MongoDatabase database = mongoClient.getDatabase(databaseName);
-            MongoCollection<Document> collection = database.getCollection(collectionName);
-
-            // Retrieve search indexes
-            try (MongoCursor<Document> resultsCursor = collection.listSearchIndexes()
-                .iterator()) {
-                while (resultsCursor.hasNext()) {
-                    Document indexDocument = resultsCursor.next();
-                    if (indexName.equals(indexDocument.getString("name"))) {
-                        indexExists = true;
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Set initializeSchema based on whether the index exists
-        boolean initializeSchema = !indexExists;
-
-        return new MongoDBAtlasVectorStore(mongoTemplate, embeddingModel, MongoDBAtlasVectorStore.MongoDBVectorStoreConfig.builder()
-            .build(), initializeSchema);
-    }
-
-    @Bean
-    public MongoTemplate mongoTemplate(MongoClient mongoClient) {
-        return new MongoTemplate(mongoClient, databaseName);
+        return new MongoDBAtlasVectorStore(mongoTemplate, embeddingModel,
+                MongoDBAtlasVectorStore.MongoDBVectorStoreConfig.builder().build(), true);
     }
 
     @Bean
